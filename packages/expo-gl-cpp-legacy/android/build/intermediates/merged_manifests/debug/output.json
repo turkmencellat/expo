@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "applicationId": "expo.modules.gl.cpp.legacy",
+  "variantType": "LIBRARY",
+  "elements": [
+    {
+      "outputType": {
+        "type": "MERGED_MANIFESTS"
+      },
+      "apkData": {
+        "type": "MAIN",
+        "splits": [],
+        "versionCode": 25,
+        "versionName": "8.4.0",
+        "outputFile": "expo-gl-cpp-legacy-debug.aar",
+        "fullName": "debug",
+        "baseName": "debug",
+        "dirName": ""
+      },
+      "path": "../../library_manifest/debug/AndroidManifest.xml",
+      "properties": {
+        "packageId": "expo.modules.gl.cpp.legacy",
+        "split": ""
+      }
+    }
+  ]
+}
