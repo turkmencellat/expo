@@ -8,6 +8,10 @@ Expo maintains ~6 months of backwards compatibility. Once an SDK version has bee
 
 > **Note**: If you are running ExpoKit inside a native project, upgrading will require extra steps. ExpoKit is deprecated and will no longer be supported after SDK 38. We recommend [migrating existing ExpoKit projects to the bare workflow](../../bare/migrating-from-expokit/).
 
+## SDK 38
+
+[Blog Post](https://dev.to/expo/expo-sdk-38-is-now-available-5aa0)
+
 ## SDK 37
 
 [Blog Post](https://dev.to/expo/expo-sdk-37-is-now-available-69g)
@@ -323,7 +327,7 @@ The following APIs have been removed after being deprecated for a minimum of 2 r
 
 - React Native no longer supports nesting components inside of `<Image>` — some developers used this to use an image as a background behind other views. To fix this in your app, replace the `Image` component anywhere where you are nesting views inside of it with the `ImageBackground` component, like this:
 
-````jsx
+```jsx
   <View style={styles.container}>
     <ImageBackground
       source={require('./path/to/image.png')}

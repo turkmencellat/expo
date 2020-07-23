@@ -6,7 +6,22 @@
 
 ### 🎉 New features
 
+- Easier to follow installation instructions by moving them to the Expo documentation ([#9145](https://github.com/expo/expo/pull/9145)).
+
 ### 🐛 Bug fixes
+
+## 0.2.11 — 2020-06-29
+
+### 🐛 Bug fixes
+
+- Fixed an issue where the publish workflow was broken on Android. Note that the publish workflow will not be supported in a future version of expo-updates, so we recommend [switching to the no-publish workflow](https://blog.expo.io/over-the-air-updates-from-expo-are-now-even-easier-to-use-376e2213fabf).
+
+## 0.2.10 — 2020-06-23
+
+### 🐛 Bug fixes
+
+- Fixed reading the `expo.modules.updates.ENABLED` setting from AndroidManifest.xml.
+- Improved the error message logged when an embedded manifest cannot be found.
 
 ## 0.2.9 — 2020-06-15
 

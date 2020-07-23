@@ -3,7 +3,7 @@ package expo.modules.updates.manifest;
 import android.net.Uri;
 import android.util.Log;
 
-import expo.modules.updates.UpdatesController;
+import expo.modules.updates.UpdatesConfiguration;
 import expo.modules.updates.db.entity.AssetEntity;
 import expo.modules.updates.db.entity.UpdateEntity;
 
@@ -32,6 +32,7 @@ public class LegacyManifest implements Manifest {
   private Uri mAssetsUrlBase = null;
 
   private UUID mId;
+  private String mScopeKey;
   private Date mCommitTime;
   private String mRuntimeVersion;
   private JSONObject mMetadata;
@@ -39,10 +40,21 @@ public class LegacyManifest implements Manifest {
   private JSONArray mAssets;
 
   private JSONObject mManifestJson;
+  private Uri mManifestUrl;
 
-  private LegacyManifest(JSONObject manifestJson, UUID id, Date commitTime, String runtimeVersion, JSONObject metadata, Uri bundleUrl, JSONArray assets) {
+  private LegacyManifest(JSONObject manifestJson,
+                         Uri manifestUrl,
+                         UUID id,
+                         String scopeKey,
+                         Date commitTime,
+                         String runtimeVersion,
+                         JSONObject metadata,
+                         Uri bundleUrl,
+                         JSONArray assets) {
     mManifestJson = manifestJson;
+    mManifestUrl = manifestUrl;
     mId = id;
+    mScopeKey = scopeKey;
     mCommitTime = commitTime;
     mRuntimeVersion = runtimeVersion;
     mMetadata = metadata;
@@ -50,7 +62,7 @@ public class LegacyManifest implements Manifest {
     mAssets = assets;
   }
 
-  public static LegacyManifest fromLegacyManifestJson(JSONObject manifestJson) throws JSONException {
+  public static LegacyManifest fromLegacyManifestJson(JSONObject manifestJson, UpdatesConfiguration configuration) throws JSONException {
     UUID id = UUID.fromString(manifestJson.getString("releaseId"));
     String commitTimeString = manifestJson.getString("commitTime");
     String runtimeVersion = manifestJson.getString("sdkVersion");
@@ -76,7 +88,7 @@ public class LegacyManifest implements Manifest {
 
     JSONArray bundledAssets = manifestJson.optJSONArray("bundledAssets");
 
-    return new LegacyManifest(manifestJson, id, commitTime, runtimeVersion, manifestJson, bundleUrl, bundledAssets);
+    return new LegacyManifest(manifestJson,configuration.getUpdateUrl(), id, configuration.getScopeKey(), commitTime, runtimeVersion, manifestJson, bundleUrl, bundledAssets);
   }
 
   public JSONObject getRawManifestJson() {
@@ -84,8 +96,7 @@ public class LegacyManifest implements Manifest {
   }
 
   public UpdateEntity getUpdateEntity() {
-    String projectIdentifier = UpdatesController.getInstance().getUpdateUrl().toString();
-    UpdateEntity updateEntity = new UpdateEntity(mId, mCommitTime, mRuntimeVersion, projectIdentifier);
+    UpdateEntity updateEntity = new UpdateEntity(mId, mCommitTime, mRuntimeVersion, mScopeKey);
     if (mMetadata != null) {
       updateEntity.metadata = mMetadata;
     }
@@ -128,8 +139,7 @@ public class LegacyManifest implements Manifest {
 
   private Uri getAssetsUrlBase() {
     if (mAssetsUrlBase == null) {
-      Uri manifestUrl = UpdatesController.getInstance().getUpdateUrl();
-      String hostname = manifestUrl.getHost();
+      String hostname = mManifestUrl.getHost();
       if (hostname == null) {
         mAssetsUrlBase = Uri.parse(EXPO_ASSETS_URL_BASE);
       } else {
@@ -143,8 +153,8 @@ public class LegacyManifest implements Manifest {
         if (mAssetsUrlBase == null) {
           // use manifest url as the base
           String assetsPath = getRawManifestJson().optString("assetUrlOverride", "assets");
-          Uri.Builder assetsBaseUrlBuilder = manifestUrl.buildUpon();
-          List<String> segments = manifestUrl.getPathSegments();
+          Uri.Builder assetsBaseUrlBuilder = mManifestUrl.buildUpon();
+          List<String> segments = mManifestUrl.getPathSegments();
           assetsBaseUrlBuilder.path("");
           for (int i = 0; i < segments.size() - 1; i++) {
             assetsBaseUrlBuilder.appendPath(segments.get(i));

@@ -1,7 +1,6 @@
 // Copyright 2019-present 650 Industries. All rights reserved.
 
 #import <CommonCrypto/CommonDigest.h>
-#import <EXUpdates/EXUpdatesAppController.h>
 #import <EXUpdates/EXUpdatesCrypto.h>
 #import <EXUpdates/EXUpdatesFileDownloader.h>
 
@@ -15,11 +14,15 @@ static NSString * const kEXPublicKeyFilename = @"manifestPublicKey.pem";
 
 + (void)verifySignatureWithData:(NSString *)data
                       signature:(NSString *)signature
+                         config:(EXUpdatesConfig *)config
+                 cacheDirectory:(NSURL *)cacheDirectory
                    successBlock:(EXUpdatesVerifySignatureSuccessBlock)successBlock
                      errorBlock:(EXUpdatesVerifySignatureErrorBlock)errorBlock
 {
   [self fetchAndVerifySignatureWithData:data
                               signature:signature
+                                 config:config
+                         cacheDirectory:cacheDirectory
                                useCache:YES
                            successBlock:successBlock
                              errorBlock:errorBlock];
@@ -27,6 +30,8 @@ static NSString * const kEXPublicKeyFilename = @"manifestPublicKey.pem";
 
 + (void)fetchAndVerifySignatureWithData:(NSString *)data
                               signature:(NSString *)signature
+                                 config:(EXUpdatesConfig *)config
+                         cacheDirectory:(NSURL *)cacheDirectory
                                useCache:(BOOL)useCache
                            successBlock:(EXUpdatesVerifySignatureSuccessBlock)successBlock
                              errorBlock:(EXUpdatesVerifySignatureErrorBlock)errorBlock
@@ -36,8 +41,7 @@ static NSString * const kEXPublicKeyFilename = @"manifestPublicKey.pem";
     return;
   }
 
-  NSURL *updatesDirectory = [EXUpdatesAppController sharedInstance].updatesDirectory;
-  NSURL *cachedPublicKeyUrl = [updatesDirectory URLByAppendingPathComponent:kEXPublicKeyFilename];
+  NSURL *cachedPublicKeyUrl = [cacheDirectory URLByAppendingPathComponent:kEXPublicKeyFilename];
   if (useCache) {
     NSData *publicKeyData = [NSData dataWithContentsOfFile:[cachedPublicKeyUrl absoluteString]];
     [[self class] verifyWithPublicKey:publicKeyData signature:signature signedString:data callback:^(BOOL isValid) {
@@ -46,6 +50,8 @@ static NSString * const kEXPublicKeyFilename = @"manifestPublicKey.pem";
       } else {
         [[self class] fetchAndVerifySignatureWithData:data
                                             signature:signature
+                                               config:config
+                                       cacheDirectory:cacheDirectory
                                              useCache:NO
                                          successBlock:successBlock
                                            errorBlock:errorBlock];
@@ -54,7 +60,7 @@ static NSString * const kEXPublicKeyFilename = @"manifestPublicKey.pem";
   } else {
     NSURLSessionConfiguration *configuration = NSURLSessionConfiguration.defaultSessionConfiguration;
     configuration.requestCachePolicy = NSURLRequestReloadIgnoringCacheData;
-    EXUpdatesFileDownloader *fileDownloader = [[EXUpdatesFileDownloader alloc] initWithURLSessionConfiguration:configuration];
+    EXUpdatesFileDownloader *fileDownloader = [[EXUpdatesFileDownloader alloc] initWithUpdatesConfig:config URLSessionConfiguration:configuration];
     [fileDownloader downloadFileFromURL:[NSURL URLWithString:kEXPublicKeyUrl]
                                  toPath:[cachedPublicKeyUrl path]
                            successBlock:^(NSData *publicKeyData, NSURLResponse *response) {

@@ -13,6 +13,7 @@ const DIR_MAPPING = {
   bare: 'Essentials',
   tutorials: 'Tutorials',
   sdk: 'Expo SDK',
+  config: 'Configuration Files',
   'react-native': 'React Native',
   'get-started': 'Get Started',
   tutorial: 'Tutorial',
@@ -21,6 +22,7 @@ const DIR_MAPPING = {
   distribution: 'Distributing Your App',
   expokit: 'ExpoKit',
   'regulatory-compliance': 'Regulatory Compliance',
+  'push-notifications': 'Push Notifications',
 };
 
 const processUrl = path => {
