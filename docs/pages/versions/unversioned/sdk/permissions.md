@@ -34,7 +34,7 @@ To limit the permissions your managed workflow app requires, set the `android.pe
 
 See the [`Permission types`](#permission-types) below to learn about which Android permissions are added. You can find a full list of all available permissions in the [Android Manifest.permissions reference](https://developer.android.com/reference/android/Manifest.permission).
 
-<!-- todo: add a list of permissions required by Expo -->
+> **Note:** [see the `android.permissions` documentation](../../config/app/#android) to learn about which permissions are always included.
 
 > **Note:** apps using dangerous or signature permissions without valid reasons _may be rejected by Google_. Make sure you follow the [Android permissions best practices](https://developer.android.com/training/permissions/usage-notes) when submitting your app.
 
@@ -382,7 +382,6 @@ The permission type for reading or writing to the camera roll.
 [cameraroll-android-write]: https://developer.android.com/reference/android/Manifest.permission#WRITE_EXTERNAL_STORAGE
 [cameraroll-ios-plist]: https://developer.apple.com/documentation/photokit/requesting_authorization_to_access_photos#3030690
 
->>>>>>> ec70421eb8... [docs] Add per-permission information and behavior on platforms
 ### `Permissions.CALENDAR`
 
 The permission type for reading or writing to the calendar.
