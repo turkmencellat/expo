@@ -34,7 +34,6 @@ const FaceDetector = optionalRequire(() => require('../screens/FaceDetectorScree
 const FileSystem = optionalRequire(() => require('../screens/FileSystemScreen'));
 const FirebaseRecaptcha = optionalRequire(() => require('../screens/FirebaseRecaptchaScreen'));
 const Font = optionalRequire(() => require('../screens/FontScreen'));
-const Geocoding = optionalRequire(() => require('../screens/GeocodingScreen'));
 const Google = optionalRequire(() => require('../screens/GoogleScreen'));
 const GoogleSignIn = optionalRequire(() => require('../screens/GoogleSignInScreen'));
 const Haptics = optionalRequire(() => require('../screens/HapticsScreen'));
@@ -102,7 +101,6 @@ const optionalScreens: {
   Contacts,
   ContactDetail,
   Events,
-  Geocoding,
   ImageManipulator,
   ImagePicker,
   InAppPurchases,

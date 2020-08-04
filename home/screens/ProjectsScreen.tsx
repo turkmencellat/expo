@@ -3,8 +3,6 @@ import Constants from 'expo-constants';
 import { AllStackRoutes } from 'navigation/Navigation.types';
 import * as React from 'react';
 import { Alert, AppState, Clipboard, Platform, StyleSheet, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import semver from 'semver';
 
 import ApiV2HttpClient from '../api/ApiV2HttpClient';
 import Connectivity from '../api/Connectivity';
@@ -12,7 +10,6 @@ import DevIndicator from '../components/DevIndicator';
 import ListItem from '../components/ListItem';
 import ScrollView from '../components/NavigationScrollView';
 import NoProjectsOpen from '../components/NoProjectsOpen';
-import NoProjectTools from '../components/NoProjectTools';
 import ProjectListItem from '../components/ProjectListItem';
 import ProjectTools from '../components/ProjectTools';
 import RefreshControl from '../components/RefreshControl';
@@ -20,15 +17,13 @@ import SectionHeader from '../components/SectionHeader';
 import { StyledText } from '../components/Text';
 import ThemedStatusBar from '../components/ThemedStatusBar';
 import HistoryActions from '../redux/HistoryActions';
+import { useDispatch, useSelector } from '../redux/Hooks';
 import { DevSession, HistoryList } from '../types';
 import addListenerWithNativeCallback from '../utils/addListenerWithNativeCallback';
 import Environment from '../utils/Environment';
 import getSnackId from '../utils/getSnackId';
 
-const IS_RESTRICTED = Environment.IsIOSRestrictedBuild;
 const PROJECT_UPDATE_INTERVAL = 10000;
-
-const SupportedExpoSdks = Constants.supportedExpoSdks || [];
 
 type Props = NavigationProps & {
   dispatch: (data: any) => any;
@@ -257,14 +252,9 @@ class ProjectsView extends React.Component<Props, State> {
   };
 
   private _renderProjectTools = () => {
-    if (IS_RESTRICTED) {
-      return <NoProjectTools />;
-    } else {
-      // Disable polling the clipboard on iOS because it presents a notification every time the clipboard is read.
-      const pollForUpdates = this.props.isFocused && Platform.OS !== 'ios';
-
-      return <ProjectTools pollForUpdates={pollForUpdates} />;
-    }
+    // Disable polling the clipboard on iOS because it presents a notification every time the clipboard is read.
+    const pollForUpdates = this.props.isFocused && Platform.OS !== 'ios';
+    return <ProjectTools pollForUpdates={pollForUpdates} />;
   };
 
   private _renderRecentHistory = () => {
@@ -330,11 +320,7 @@ class ProjectsView extends React.Component<Props, State> {
           style={styles.supportSdksText}
           lightColor="rgba(0,0,0,0.3)"
           darkColor="rgba(255,255,255,0.6)">
-          Supported SDK
-          {SupportedExpoSdks.length === 1 ? ': ' : 's: '}
-          {SupportedExpoSdks.map(semver.major)
-            .sort((a, b) => a - b)
-            .join(', ')}
+          Supported {Environment.supportedSdksString}
         </StyledText>
       </View>
     );
