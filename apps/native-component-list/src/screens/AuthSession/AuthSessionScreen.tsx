@@ -391,7 +391,7 @@ function Facebook({ usePKCE, prompt, useProxy }: any) {
     {
       clientId: '145668956753819',
       usePKCE,
-      selectAccount: !!prompt,
+      // selectAccount: !!prompt,
       // responseType: AuthSession.ResponseType.Token,
       // redirectUri,
       // scopes: ['user_likes'],
